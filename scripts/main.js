@@ -86,6 +86,7 @@ $(function () {
 
   //リアルタイム通信の準備
   var newPostRef = firebase.database().ref();
+  // ログイン用
   var userEmail = "";
   var userName = "";
 
