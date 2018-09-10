@@ -62,7 +62,7 @@
   <!--コンテンツ表示画面-->
   <div id="loading_end" style="display:none;">
     <!--nav-->
-    <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+    <!-- <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -90,7 +90,36 @@
             class="d-inline-block align-top" alt="">
         </a>
       </div>
+    </nav> -->
+    <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="#" id="back_top">
+        <img src="https://www.gstatic.com/mobilesdk/160503_mobilesdk/logo/2x/firebase_28dp.png" width="30" height="30"
+          class="d-inline-block align-top" alt="">
+        Fire
+        <i class="material-icons">code</i>
+        Books
+      </a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item mr-3 d-flex">
+            <label for="radio_title" class="h-100 mr-2 my-2 my-lg-0 d-flex align-items-center">
+              <input type="radio" id="radio_title" class="mr-1" name="search" value="title" checked> タイトルで検索
+            </label>
+            <label for="radio_comment" class="h-100 mr-2 my-2 my-lg-0 d-flex align-items-center">
+              <input type="radio" id="radio_comment" class="mr-1" name="search" value="comment"> コメントで検索
+            </label>
+          </li>
+          <li class="nav-item mr-2 search">
+            <input class="form-control mr-sm-2" type="text" id="search-text" placeholder="Search">
+          </li>
+        </ul>
+      </div>
     </nav>
+    <div id="buffer"></div>
 
 
 
