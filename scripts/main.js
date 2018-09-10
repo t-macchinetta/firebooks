@@ -96,6 +96,7 @@ $(function () {
       //ログインしていなければ認証画面にリダイレクト
       var provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithRedirect(provider);
+      // firebase.auth().signInWithPopup(provider);
       return;
     }
     //ログイン成功時の処理
@@ -117,28 +118,19 @@ $(function () {
         var v = child.val();
         // メッセージ表示
         str = str +
-          '<div class="card mb-3" id="' + k + '">' +
-          '<div class="card-header">' +
-          '<h5 class="card-title title keyword">' +
-          v.title +
-          '</h5>' +
-          '<div class="card-subtitle mb-2 text-muted rate">' +
-          v.rate +
-          '</div>' +
-          '</div>' +
-          '<div class="card-block hidden">' +
-          '<div class="card-text">updated at ' +
-          v.date + ' by ' + v.username +
-          '</div>' +
-          '<div class="card-text comment keyword">' +
-          v.comment +
-          '</div>' +
-          // 編集ボタン
-          '<button type="button" class="btn btn-secondary mt-2 mr-2 edit disable"><i class="material-icons">edit</i></button>' +
-          // 削除ボタン
-          '<button type="button" class="btn btn-secondary mt-2 delete disable"><i class="material-icons">delete</i></button>' +
-          '</div>' +
-          '</div>';
+          `<div class="card mb-3" id="${k}">
+              <div class="card-header">
+                  <h5 class="card-title title keyword">${v.title}</h5>
+                  <div class="card-subtitle mb-2 text-muted rate">${v.rate}</div>
+              </div>
+              <div class="card-block hidden">
+                  <div class="card-text">updated at <span class="date">${v.date}</span></div>
+                  <div class="card-text">by <span class="username">${v.username}</span></div>
+                  <div class="card-text comment keyword">${v.comment}</div>
+                  <button type="button" class="btn btn-secondary mt-2 mr-2 edit disable"><i class="material-icons">edit</i></button>
+                  <button type="button" class="btn btn-secondary mt-2 delete disable"><i class="material-icons">delete</i></button>
+              </div>
+          </div>`;
       });
       // ↓表示処理
       // 情報が変更されるたびに更新するのでhtmlにする
@@ -175,13 +167,15 @@ $(function () {
   // 編集判別要変数
   var editStatus = 0;
 
+  // データ追加時の処理
   // submitでデータ送信
   $('#send').on('click', function () {
     var time = new Date();
     var year = time.getFullYear();
     var month = time.getMonth() + 1;
     var date = time.getDate();
-    var nowdate = year + "/" + month + "/" + date;
+    // var nowdate = year + "/" + month + "/" + date;
+    var nowdate = `${year}/${month}/${date}`;
     newPostRef.push({
       date: nowdate,
       user_id: userEmail,
@@ -190,7 +184,6 @@ $(function () {
       rate: $('#rate').val(),
       comment: $('#text').val().split('\n').join('<br>')
     });
-    // $('#title').val("").change();
     $('#title').val("");
     $('#rate').val("★★★");
     $('#text').val("");
@@ -223,60 +216,87 @@ $(function () {
     editStatus = 1;
     var id = $(this).parent().parent().attr("id");
     var username = $('#' + id).find('.username').text();
+    var date = $('#' + id).find('.date').text();
     var title = $('#' + id).find('.title').text();
     var rate = $('#' + id).find('.rate').text();
     var comment = $('#' + id).find('.comment').html();
     var editComment = comment.split('<br>').join('\n');
+    var rate_select;
     // 項目を編集できるようにinputに変更する
-    $('#' + id).find('.title').html('<input type="text" id="title_edit" class="form-control" value="' + title + '"/>');
+    // 評価の数値で表示を分ける
     if (rate == "★★★★★") {
-      $('#' + id).find('.rate').html('<select id="rate_edit" class="form-control"><option value="★★★★★" selected>★★★★★</option><option value="★★★★">★★★★</option><option value="★★★">★★★</option><option value="★★">★★</option><option value="★">★</option></select>');
+      rate_select = `<select id="rate_edit" class="form-control"><option value="★★★★★" selected>★★★★★</option><option value="★★★★">★★★★</option><option value="★★★">★★★</option><option value="★★">★★</option><option value="★">★</option></select>`;
     } else if (rate == "★★★★") {
-      $('#' + id).find('.rate').html('<select id="rate_edit" class="form-control"><option value="★★★★★">★★★★★</option><option value="★★★★" selected>★★★★</option><option value="★★★">★★★</option><option value="★★">★★</option><option value="★">★</option></select>');
+      rate_select = `<select id="rate_edit" class="form-control"><option value="★★★★★">★★★★★</option><option value="★★★★" selected>★★★★</option><option value="★★★">★★★</option><option value="★★">★★</option><option value="★">★</option></select>`;
     } else if (rate == "★★★") {
-      $('#' + id).find('.rate').html('<select id="rate_edit" class="form-control"><option value="★★★★★">★★★★★</option><option value="★★★★">★★★★</option><option value="★★★" selected>★★★</option><option value="★★">★★</option><option value="★">★</option></select>');
+      rate_select = `<select id="rate_edit" class="form-control"><option value="★★★★★">★★★★★</option><option value="★★★★">★★★★</option><option value="★★★" selected>★★★</option><option value="★★">★★</option><option value="★">★</option></select>`;
     } else if (rate == "★★") {
-      $('#' + id).find('.rate').html('<select id="rate_edit" class="form-control"><option value="★★★★★">★★★★★</option><option value="★★★★">★★★★</option><option value="★★★">★★★</option><option value="★★" selected>★★</option><option value="★">★</option></select>');
+      rate_select = `<select id="rate_edit" class="form-control"><option value="★★★★★">★★★★★</option><option value="★★★★">★★★★</option><option value="★★★">★★★</option><option value="★★" selected>★★</option><option value="★">★</option></select>`;
     } else if (rate == "★") {
-      $('#' + id).find('.rate').html('<select id="rate_edit" class="form-control"><option value="★★★★★">★★★★★</option><option value="★★★★">★★★★</option><option value="★★★">★★★</option><option value="★★">★★</option><option value="★" selected>★</option></select>');
+      rate_select = `<select id="rate_edit" class="form-control"><option value="★★★★★">★★★★★</option><option value="★★★★">★★★★</option><option value="★★★">★★★</option><option value="★★">★★</option><option value="★" selected>★</option></select>`;
     }
-    $('#' + id).find('.comment').html('<textarea rows="3" id="text_edit" class="form-control">' + editComment + '</textarea>');
-    // ボタンの文言を変更する(クラスも変更して挙動をいい感じにする)
-    $('#' + id).find('.edit').html('<i class="material-icons">arrow_back</i>');
-    $('#' + id).find('.edit').addClass("cancel");
-    $('#' + id).find('.edit').removeClass("edit");
+
+    var str =
+      `<div class="card-header">
+          <h5 class="card-title title keyword">
+              <input type="text" id="title_edit" class="form-control" value="${title}"/>
+          </h5>
+          <div class="card-subtitle mb-2 text-muted rate">${rate_select}</div>
+      </div>
+      <div class="card-block">
+          <div class="card-text">updated at <span class="date">${date}</span></div>
+          <div class="card-text">by <span class="username">${username}</span></div>
+          <div class="card-text comment keyword">
+              <textarea rows="3" id="text_edit" class="form-control">${editComment}</textarea>
+          </div>
+          <button type="button" class="btn btn-secondary mt-2 mr-2 cancel disable"><i class="material-icons">arrow_back</i></button>
+          <button type="button" class="btn btn-primary mt-2 set disable"><i class="material-icons">done</i></button>
+      </div>`;
+    $('#' + id).html(str);
+
     // 変更していない部分のボタンは押せないようにする
-    $('.edit').prop('disabled', true);
-    $('#' + id).find('.delete').html('<i class="material-icons">done</i>');
-    $('#' + id).find('.delete').addClass("set");
-    $('#' + id).find('.delete').removeClass("delete");
-    $('#' + id).find('.set').addClass("btn-primary");
-    $('#' + id).find('.set').removeClass("btn-secondary");
-    // $('.set').prop('disabled', true);
-    $('.delete').prop('disabled', true);
-    $('#add').prop('disabled', true);
-    $('#send').prop('disabled', true);
-    $('#search-text').prop('disabled', true);
+    $('nav button').prop('disabled', true);
+    $('.edit, .delete, #add, #send, #search-text').prop('disabled', true);
+    // $('.delete').prop('disabled', true);
+    // $('#add').prop('disabled', true);
+    // $('#send').prop('disabled', true);
+    // $('#search-text').prop('disabled', true);
     $('input[name="search"]:radio').prop('disabled', true);
     // キャンセル時の挙動
     // inputを登録内容の表示に戻す
     $('#output').on('click', '.cancel', function () {
-      $('#' + id).find('.title').html(title);
-      $('#' + id).find('.rate').html(rate);
-      $('#' + id).find('.comment').html(comment);
-      $('#' + id).find('.cancel').html('<i class="material-icons">edit</i>');
-      $('#' + id).find('.cancel').addClass("edit");
-      $('#' + id).find('.cancel').removeClass("cancel");
-      $('.edit').prop('disabled', false);
-      $('#' + id).find('.set').html('<i class="material-icons">delete</i>');
-      $('#' + id).find('.set').addClass("delete");
-      $('#' + id).find('.set').removeClass("set");
-      $('#' + id).find('.delete').addClass("btn-secondary");
-      $('#' + id).find('.delete').removeClass("btn-primary");
-      $('.delete').prop('disabled', false);
-      $('#add').prop('disabled', false);
-      // $('#send').prop('disabled', false);
-      $('#search-text').prop('disabled', false);
+      // $('#' + id).find('.title').html(title);
+      // $('#' + id).find('.rate').html(rate);
+      // $('#' + id).find('.comment').html(comment);
+      // $('#' + id).find('.cancel').html(`<i class="material-icons">edit</i>`);
+      // $('#' + id).find('.cancel').addClass('edit');
+      // $('#' + id).find('.cancel').removeClass('cancel');
+      // $('.edit').prop('disabled', false);
+      // $('#' + id).find('.set').html(`<i class="material-icons">delete</i>`);
+      // $('#' + id).find('.set').addClass('delete');
+      // $('#' + id).find('.set').removeClass('set');
+      // $('#' + id).find('.delete').addClass('btn-secondary');
+      // $('#' + id).find('.delete').removeClass('btn-primary');
+      // $('.delete').prop('disabled', false);
+      // $('#add').prop('disabled', false);
+      // // $('#send').prop('disabled', false);
+      // $('#search-text').prop('disabled', false);
+      // $('input[name="search"]:radio').prop('disabled', false);
+      var str =
+        `<div class="card-header">
+                  <h5 class="card-title title keyword">${title}</h5>
+                  <div class="card-subtitle mb-2 text-muted rate">${rate}</div>
+              </div>
+              <div class="card-block">
+                  <div class="card-text">updated at <span class="date">${date}</span></div>
+                  <div class="card-text">by <span class="username">${username}</span></div>
+                  <div class="card-text comment keyword">${comment}</div>
+                  <button type="button" class="btn btn-secondary mt-2 mr-2 edit disable"><i class="material-icons">edit</i></button>
+                  <button type="button" class="btn btn-secondary mt-2 delete disable"><i class="material-icons">delete</i></button>
+              </div>`;
+      $('#' + id).html(str);
+      $('nav button').prop('disabled', false);
+      $('.edit, .delete, #add, #send, #search-text').prop('disabled', false);
       $('input[name="search"]:radio').prop('disabled', false);
       editStatus = 0;
     });
@@ -294,7 +314,8 @@ $(function () {
       var year = time.getFullYear();
       var month = time.getMonth() + 1;
       var date = time.getDate();
-      var nowdate = year + "/" + month + "/" + date;
+      // var nowdate = year + "/" + month + "/" + date;
+      var nowdate = `${year}/${month}/${date}`;
       // 更新する場所を指定
       var bookRef = firebase.database().ref("/" + id);
       // 現在のユニークキー箇所を更新するバージョン
@@ -308,18 +329,17 @@ $(function () {
       $('#' + id).find('.title').html(title);
       $('#' + id).find('.rate').html(rate);
       $('#' + id).find('.comment').html(comment);
-      $('#' + id).find('.cancel').html('<i class="material-icons">edit</i>');
-      $('#' + id).find('.cancel').addClass("edit");
-      $('#' + id).find('.cancel').removeClass("cancel");
+      $('#' + id).find('.cancel').html(`<i class="material-icons">edit</i>`);
+      $('#' + id).find('.cancel').addClass('edit');
+      $('#' + id).find('.cancel').removeClass('cancel');
       $('.edit').prop('disabled', false);
-      $('#' + id).find('.set').html('<i class="material-icons">delete</i>');
-      $('#' + id).find('.set').addClass("delete");
-      $('#' + id).find('.set').removeClass("set");
-      $('#' + id).find('.delete').addClass("btn-secondary");
-      $('#' + id).find('.delete').removeClass("btn-primary");
+      $('#' + id).find('.set').html(`<i class="material-icons">delete</i>`);
+      $('#' + id).find('.set').addClass('delete');
+      $('#' + id).find('.set').removeClass('set');
+      $('#' + id).find('.delete').addClass('btn-secondary');
+      $('#' + id).find('.delete').removeClass('btn-primary');
       $('.delete').prop('disabled', false);
       $('#add').prop('disabled', false);
-      // $('#send').prop('disabled', false);
       $('#search-text').prop('disabled', false);
       $('input[name="search"]:radio').prop('disabled', false);
       editStatus = 0;
@@ -378,14 +398,9 @@ $(function () {
 
   // タイトルクリックで詳細表示
   $('#output').on('click', '.card-header', function () {
-    // var id = $(this).parent().parent().attr("id");
     if (editStatus == 0) {
       var id = $(this).parent().attr("id");
-      // alert(id);
       $('#' + id).find('.card-block').slideToggle();
-      // $('#'+id).find('.card-text').slideToggle();
-      // $('#'+id).find('.btn').slideToggle();
-      // $('#'+id).find('.title').html(title);
     }
   });
 
@@ -397,6 +412,7 @@ $(function () {
     })
       .data('original_row', $(this).attr('rows'));
   });
+
   $('textarea').bind('keyup', function () {
     var self = this;
     var value = $(this).val().split("\n");
