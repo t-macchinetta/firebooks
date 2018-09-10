@@ -257,43 +257,22 @@ $(function () {
     // 変更していない部分のボタンは押せないようにする
     $('nav button').prop('disabled', true);
     $('.edit, .delete, #add, #send, #search-text').prop('disabled', true);
-    // $('.delete').prop('disabled', true);
-    // $('#add').prop('disabled', true);
-    // $('#send').prop('disabled', true);
-    // $('#search-text').prop('disabled', true);
     $('input[name="search"]:radio').prop('disabled', true);
     // キャンセル時の挙動
     // inputを登録内容の表示に戻す
     $('#output').on('click', '.cancel', function () {
-      // $('#' + id).find('.title').html(title);
-      // $('#' + id).find('.rate').html(rate);
-      // $('#' + id).find('.comment').html(comment);
-      // $('#' + id).find('.cancel').html(`<i class="material-icons">edit</i>`);
-      // $('#' + id).find('.cancel').addClass('edit');
-      // $('#' + id).find('.cancel').removeClass('cancel');
-      // $('.edit').prop('disabled', false);
-      // $('#' + id).find('.set').html(`<i class="material-icons">delete</i>`);
-      // $('#' + id).find('.set').addClass('delete');
-      // $('#' + id).find('.set').removeClass('set');
-      // $('#' + id).find('.delete').addClass('btn-secondary');
-      // $('#' + id).find('.delete').removeClass('btn-primary');
-      // $('.delete').prop('disabled', false);
-      // $('#add').prop('disabled', false);
-      // // $('#send').prop('disabled', false);
-      // $('#search-text').prop('disabled', false);
-      // $('input[name="search"]:radio').prop('disabled', false);
       var str =
         `<div class="card-header">
-                  <h5 class="card-title title keyword">${title}</h5>
-                  <div class="card-subtitle mb-2 text-muted rate">${rate}</div>
-              </div>
-              <div class="card-block">
-                  <div class="card-text">updated at <span class="date">${date}</span></div>
-                  <div class="card-text">by <span class="username">${username}</span></div>
-                  <div class="card-text comment keyword">${comment}</div>
-                  <button type="button" class="btn btn-secondary mt-2 mr-2 edit disable"><i class="material-icons">edit</i></button>
-                  <button type="button" class="btn btn-secondary mt-2 delete disable"><i class="material-icons">delete</i></button>
-              </div>`;
+            <h5 class="card-title title keyword">${title}</h5>
+            <div class="card-subtitle mb-2 text-muted rate">${rate}</div>
+        </div>
+        <div class="card-block">
+            <div class="card-text">updated at <span class="date">${date}</span></div>
+            <div class="card-text">by <span class="username">${username}</span></div>
+            <div class="card-text comment keyword">${comment}</div>
+            <button type="button" class="btn btn-secondary mt-2 mr-2 edit disable"><i class="material-icons">edit</i></button>
+            <button type="button" class="btn btn-secondary mt-2 delete disable"><i class="material-icons">delete</i></button>
+        </div>`;
       $('#' + id).html(str);
       $('nav button').prop('disabled', false);
       $('.edit, .delete, #add, #send, #search-text').prop('disabled', false);
@@ -305,7 +284,6 @@ $(function () {
       // 対応するデータを更新する
       // 入力内容を取得
       var id = $(this).parent().parent().attr("id");
-      // var username = $('#username_edit').val();
       var title = $('#title_edit').val();
       var rate = $('#rate_edit').val();
       var comment = $('#text_edit').val().split('\n').join('<br>');
@@ -314,7 +292,6 @@ $(function () {
       var year = time.getFullYear();
       var month = time.getMonth() + 1;
       var date = time.getDate();
-      // var nowdate = year + "/" + month + "/" + date;
       var nowdate = `${year}/${month}/${date}`;
       // 更新する場所を指定
       var bookRef = firebase.database().ref("/" + id);
@@ -326,21 +303,21 @@ $(function () {
         comment: comment
       });
       // input関連を戻す
-      $('#' + id).find('.title').html(title);
-      $('#' + id).find('.rate').html(rate);
-      $('#' + id).find('.comment').html(comment);
-      $('#' + id).find('.cancel').html(`<i class="material-icons">edit</i>`);
-      $('#' + id).find('.cancel').addClass('edit');
-      $('#' + id).find('.cancel').removeClass('cancel');
-      $('.edit').prop('disabled', false);
-      $('#' + id).find('.set').html(`<i class="material-icons">delete</i>`);
-      $('#' + id).find('.set').addClass('delete');
-      $('#' + id).find('.set').removeClass('set');
-      $('#' + id).find('.delete').addClass('btn-secondary');
-      $('#' + id).find('.delete').removeClass('btn-primary');
-      $('.delete').prop('disabled', false);
-      $('#add').prop('disabled', false);
-      $('#search-text').prop('disabled', false);
+      var str =
+        `<div class="card-header">
+            <h5 class="card-title title keyword">${title}</h5>
+            <div class="card-subtitle mb-2 text-muted rate">${rate}</div>
+        </div>
+        <div class="card-block">
+            <div class="card-text">updated at <span class="date">${nowdate}</span></div>
+            <div class="card-text">by <span class="username">${username}</span></div>
+            <div class="card-text comment keyword">${comment}</div>
+            <button type="button" class="btn btn-secondary mt-2 mr-2 edit disable"><i class="material-icons">edit</i></button>
+            <button type="button" class="btn btn-secondary mt-2 delete disable"><i class="material-icons">delete</i></button>
+        </div>`;
+      $('#' + id).html(str);
+      $('nav button').prop('disabled', false);
+      $('.edit, .delete, #add, #send, #search-text').prop('disabled', false);
       $('input[name="search"]:radio').prop('disabled', false);
       editStatus = 0;
     });
@@ -425,7 +402,5 @@ $(function () {
     var next_row = (input_row <= value_row) ? value_row + 1 : Math.max(value_row + 1, original_row);
     $(this).attr('rows', next_row);
   });
-
-
 
 });
